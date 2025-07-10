@@ -18,7 +18,9 @@ const Nav = () => {
         {/* Logo & Title */}
         <NavLink className="navbar-brand d-flex align-items-center text-white" to="/">
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Logo />
-          <span className="ms-2 fw-bold" style={{ fontSize: "1.5rem" }}>Digital Library</span>
+          <span className="ms-2 fw-bold" style={{ fontSize: "1.5rem" }}>
+            Digital Library
+          </span>
         </NavLink>
 
         {/* Hamburger for mobile */}
@@ -37,15 +39,20 @@ const Nav = () => {
         {/* Main Nav Links */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto nav-links">
-
             <li className="nav-item">
-              <NavLink to="/" className="nav-link nav-link-custom">Home</NavLink>
+              <NavLink to="/" className="nav-link nav-link-custom">
+                Home
+              </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/Browse" className="nav-link nav-link-custom">Browse</NavLink>
+              <NavLink to="/Browse" className="nav-link nav-link-custom">
+                Browse
+              </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/About" className="nav-link nav-link-custom">About Us</NavLink>
+              <NavLink to="/About" className="nav-link nav-link-custom">
+                About Us
+              </NavLink>
             </li>
 
             {/* Auth Conditional Section */}
@@ -65,7 +72,11 @@ const Nav = () => {
             ) : (
               <li className="nav-item d-flex align-items-center">
                 <img
-                  src={user.profilePic || "/default-avatar.png"}
+                  src={
+                    user.profilePic && user.profilePic.startsWith("http")
+                      ? user.profilePic
+                      : "/default-avatar.png"
+                  }
                   alt="Profile"
                   onClick={handleProfileClick}
                   style={{
@@ -79,7 +90,6 @@ const Nav = () => {
                 />
               </li>
             )}
-
           </ul>
         </div>
       </div>
