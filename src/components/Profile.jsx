@@ -30,7 +30,7 @@ const Profile = () => {
     formData.append("preference", preference);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/profile/${user.email}`, {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
         method: "PUT",
         body: formData,
       });
@@ -62,7 +62,7 @@ const Profile = () => {
     formData.append("uploader", user.name);
 
     try {
-      const res = await fetch("http://localhost:5000/api/upload-paper", {
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/upload-paper", {
         method: "POST",
         body: formData,
       });
