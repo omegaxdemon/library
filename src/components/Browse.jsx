@@ -3,13 +3,13 @@ import './browse.css';
 import Nav from './nav/Nav';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-import Spinner from './Spinner'; // ✅ Import your custom logo spinner
+import Spinner from './Spinner';
 
 const Student_dashboard = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [loading, setLoading] = useState(true); // ✅ Spinner state
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -19,11 +19,11 @@ const Student_dashboard = () => {
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
-        setLoading(false); // ✅ Hide spinner
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching books:", err);
-        setLoading(false); // ✅ Hide spinner even if error
+        setLoading(false);
       });
   }, []);
 
@@ -58,14 +58,14 @@ const Student_dashboard = () => {
     const file = book.link.toLowerCase();
     if (file.endsWith(".pdf")) {
       navigate(`/Read/${book._id}`);
-    } else if (file.endsWith(".mp3") || file.endsWith(".wav")||file.endsWith(".m4a")) {
+    } else if (file.endsWith(".mp3") || file.endsWith(".wav") || file.endsWith(".m4a")) {
       navigate(`/Hear/${book._id}`);
     } else {
       alert("Unsupported file format");
     }
   };
 
-  if (loading) return <Spinner />; // ✅ Show spinner during loading
+  if (loading) return <Spinner />;
 
   return (
     <>
@@ -102,16 +102,13 @@ const Student_dashboard = () => {
               ) : (
                 filteredBooks.map((book) => (
                   <div className="book-card" key={book._id}>
-                    <img
-                      src={`http://localhost:5000${book.cover}`}
-                      alt={book.title}
-                    />
+                    <img src={book.cover} alt={book.title} />
                     <h3>{book.title}</h3>
                     <p>by {book.author}</p>
                     <div className="book-actions">
                       {user ? (
                         <a
-                          href={encodeURI(`http://localhost:5000${book.link}`)}
+                          href={encodeURI(book.link)}
                           className="btn"
                           download
                           target="_blank"
