@@ -11,11 +11,11 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import { useAuth } from '../../AuthContext';
 import Terms from '../Terms';
 import Policy from '../Policy';
-import Spinner from '../Spinner'; // ✅ Import spinner
+import Spinner from '../Spinner';
 
 const HomePage = () => {
   const [featuredBooks, setFeaturedBooks] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ Spinner state
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -46,10 +46,10 @@ const HomePage = () => {
         );
 
         setFeaturedBooks(booksWithDescriptions);
-        setLoading(false); // ✅ Stop spinner
+        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch books:", err);
-        setLoading(false); // ✅ Stop spinner on error
+        setLoading(false);
       }
     };
 
@@ -57,65 +57,38 @@ const HomePage = () => {
   }, []);
 
   const handleDownload = (book) => {
-  if (!user) {
-    alert("You must be logged in to download.");
-    navigate("/Log");
-    return;
-  }
+    if (!user) {
+      alert("You must be logged in to download.");
+      navigate("/Log");
+      return;
+    }
 
-  // Open PDF or audio (mp3, wav) directly in browser tab
-  const fileUrl = `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
-  window.open(fileUrl, "_blank");
-};
-
+    // Use Cloudinary file link directly
+    const fileUrl = book.link;
+    window.open(fileUrl, "_blank");
+  };
 
   const features = [
-    {
-      title: 'Vast Digital Collection',
-      description: 'Access thousands of e-books, journals, research papers, and multimedia content across all academic disciplines.',
-      icon: '📚'
-    },
-    {
-      title: 'Advanced Search',
-      description: 'Find exactly what you need with powerful search filters, boolean operators, and AI-powered recommendations.',
-      icon: '🔍'
-    },
-    {
-      title: 'Offline Reading',
-      description: 'Download content for offline access and enjoy seamless reading experience across all your devices.',
-      icon: <IoMdDownload />
-    },
-    {
-      title: 'Academic Community',
-      description: 'Connect with fellow researchers, join discussions, and share insights in our vibrant academic community.',
-      icon: '👥'
-    },
-    {
-      title: 'Secure Access',
-      description: 'Role-based access control ensures you have appropriate permissions while maintaining content security.',
-      icon: '🔒'
-    },
-    {
-      title: 'Personal Library',
-      description: 'Organize your reading with bookmarks, annotations, highlights, and personalized collections.',
-      icon: '🔖'
-    }
+    { title: 'Vast Digital Collection', description: 'Access thousands of e-books, journals, research papers, and multimedia content across all academic disciplines.', icon: '📚' },
+    { title: 'Advanced Search', description: 'Find exactly what you need with powerful search filters, boolean operators, and AI-powered recommendations.', icon: '🔍' },
+    { title: 'Offline Reading', description: 'Download content for offline access and enjoy seamless reading experience across all your devices.', icon: <IoMdDownload /> },
+    { title: 'Academic Community', description: 'Connect with fellow researchers, join discussions, and share insights in our vibrant academic community.', icon: '👥' },
+    { title: 'Secure Access', description: 'Role-based access control ensures you have appropriate permissions while maintaining content security.', icon: '🔒' },
+    { title: 'Personal Library', description: 'Organize your reading with bookmarks, annotations, highlights, and personalized collections.', icon: '🔖' }
   ];
 
-  if (loading) return <Spinner />; // ✅ Show spinner while loading
+  if (loading) return <Spinner />;
+
   return (
-    <>
     <div className="page-container">
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-container">
           <div className="hero-grid">
-            {/* Left Content */}
             <div className="hero-content fade-in">
               <div className="hero-text">
                 <h1 className="hero-title">
-                  Your Gateway to
-                  <span className="hero-title-accent">Digital Knowledge</span>
+                  Your Gateway to <span className="hero-title-accent">Digital Knowledge</span>
                 </h1>
                 <p className="hero-description">
                   Access thousands of e-books, research papers, journals, and multimedia resources from anywhere. 
@@ -123,32 +96,17 @@ const HomePage = () => {
                 </p>
               </div>
               <div className="hero-buttons">
-                <NavLink to='/Log'><button className="btn btn-primary btn-large">
-                  <LogW/>&nbsp;&nbsp;Get Started &nbsp;&nbsp;&nbsp;<FaCircleChevronRight/>&nbsp;&nbsp;
-                </button></NavLink>
-                <NavLink to='/Browse'><button className="btn btn-outline btn-large">
-                  🔍 Browse Collection
-                </button></NavLink>
+                <NavLink to='/Log'><button className="btn btn-primary btn-large"><LogW />&nbsp;&nbsp;Get Started &nbsp;&nbsp;&nbsp;<FaCircleChevronRight /></button></NavLink>
+                <NavLink to='/Browse'><button className="btn btn-outline btn-large">🔍 Browse Collection</button></NavLink>
               </div>
 
-              {/* Stats */}
               <div className="hero-stats">
-                <div className="stat">
-                  <div className="stat-number">50K+</div>
-                  <div className="stat-label">Digital Books</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-number">10K+</div>
-                  <div className="stat-label">Research Papers</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-number">5K+</div>
-                  <div className="stat-label">Active Users</div>
-                </div>
+                <div className="stat"><div className="stat-number">50K+</div><div className="stat-label">Digital Books</div></div>
+                <div className="stat"><div className="stat-number">10K+</div><div className="stat-label">Research Papers</div></div>
+                <div className="stat"><div className="stat-number">5K+</div><div className="stat-label">Active Users</div></div>
               </div>
             </div>
 
-            {/* Right Content - Visual */}
             <div className="hero-visual fade-in">
               <div className="book-card-demo">
                 <div className="demo-lines">
@@ -180,13 +138,10 @@ const HomePage = () => {
               Our comprehensive platform provides all the tools and resources you need for effective research and learning.
             </p>
           </div>
-
           <div className="features-grid">
             {features.map((feature, index) => (
               <div key={index} className="feature-card">
-                <div className="feature-icon-wrapper">
-                  <div className="feature-icon">{feature.icon}</div>
-                </div>
+                <div className="feature-icon-wrapper"><div className="feature-icon">{feature.icon}</div></div>
                 <h3 className="feature-title">{feature.title}</h3>
                 <p className="feature-description">{feature.description}</p>
               </div>
@@ -195,125 +150,96 @@ const HomePage = () => {
         </div>
       </section>
 
-       {/* Featured Books Section */}
-        <section className="featured-books" id='new'>
-          <div className="featured-books-container">
-            <div className="featured-books-header">
-              <div>
-                <h2 className="section-title">Featured Books</h2>
-                <p className="section-subtitle">Discover our most popular and newly added resources</p>
-              </div>
-              <NavLink to='/Browse'><button className="btn btn-outline desktop-only">
-                View All &nbsp;&nbsp;<FaLongArrowAltRight />
-              </button></NavLink>
+      {/* Featured Books */}
+      <section className="featured-books" id='new'>
+        <div className="featured-books-container">
+          <div className="featured-books-header">
+            <div>
+              <h2 className="section-title">Featured Books</h2>
+              <p className="section-subtitle">Discover our most popular and newly added resources</p>
             </div>
+            <NavLink to='/Browse'><button className="btn btn-outline desktop-only">View All &nbsp;&nbsp;<FaLongArrowAltRight /></button></NavLink>
+          </div>
 
-            <div className="books-grid">
-              {featuredBooks.map((book, index) => (
-                <div key={index} className="book-card">
-                  <div className="book-cover">
-                    {book.cover ? (
-                      <img src={`http://localhost:5000${book.cover}`} alt={book.title} className="book-cover-img" />
-                    ) : (
-                      <div className="book-icon"><IoBookSharp /></div>
-                    )}
-                    <button className="bookmark-btn">🔖</button>
-                  </div>
+          <div className="books-grid">
+            {featuredBooks.map((book, index) => (
+              <div key={index} className="book-card">
+                <div className="book-cover">
+                  {book.cover ? (
+                    <img src={book.cover} alt={book.title} className="book-cover-img" />
+                  ) : (
+                    <div className="book-icon"><IoBookSharp /></div>
+                  )}
+                  <button className="bookmark-btn">🔖</button>
+                </div>
 
-                  <div className="book-content">
-                    <div className="book-category">{book.category}</div>
-                    <h3 className="book-title">{book.title}</h3>
-                    <p className="book-author">by {book.author}</p>
-                    {book.description && (
-                      <p className="book-description">{book.description}</p>
-                    )}
+                <div className="book-content">
+                  <div className="book-category">{book.category}</div>
+                  <h3 className="book-title">{book.title}</h3>
+                  <p className="book-author">by {book.author}</p>
+                  {book.description && (
+                    <p className="book-description">{book.description}</p>
+                  )}
 
-                    {/* ✅ UPDATED ACTIONS SECTION */}
-                    <div className="book-actions book-actions-equal">
-                      <NavLink
-                        to={
-                          book.link.toLowerCase().endsWith(".pdf")
-                            ? `/Read/${book._id}`
-                            : `/Hear/${book._id}`
-                        }
-                        className="btn btn-primary btn-small"
-                        style={{ padding: '12px 12px' }}
-                      >
-                        {book.link.toLowerCase().endsWith(".pdf") ? "📖 Read Online" : "🎧 Hear Online"}
-                      </NavLink>
+                  <div className="book-actions book-actions-equal">
+                    <NavLink
+                      to={book.link.toLowerCase().endsWith(".pdf") ? `/Read/${book._id}` : `/Hear/${book._id}`}
+                      className="btn btn-primary btn-small"
+                      style={{ padding: '12px 12px' }}
+                    >
+                      {book.link.toLowerCase().endsWith(".pdf") ? "📖 Read Online" : "🎧 Hear Online"}
+                    </NavLink>
 
-                      <button
-                        className="btn btn-outline btn-small equal-width-btn"
-                        onClick={() => handleDownload(book)}
-                      >
-                        <IoMdDownload /> Download
-                      </button>
-                    </div>
+                    <button
+                      className="btn btn-outline btn-small equal-width-btn"
+                      onClick={() => handleDownload(book)}
+                    >
+                      <IoMdDownload /> Download
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="featured-books-cta">
-              <NavLink to='/Browse'><button className="btn btn-primary">
-                Explore Full Collection &nbsp;&nbsp;<FaLongArrowAltRight />
-              </button></NavLink>
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+
+          <div className="featured-books-cta">
+            <NavLink to='/Browse'><button className="btn btn-primary">
+              Explore Full Collection &nbsp;&nbsp;<FaLongArrowAltRight />
+            </button></NavLink>
+          </div>
+        </div>
+      </section>
 
       {/* Stats Section */}
       <section className="stats">
         <div className="stats-container">
           <div className="stats-grid">
-            <div className="stat-item">
-              <div className="stat-icon">📚</div>
-              <div className="stat-number">50,000+</div>
-              <div className="stat-label">Digital Books</div>
-              <div className="stat-description">Comprehensive collection across all disciplines</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-icon">🔬</div>
-              <div className="stat-number">15,000+</div>
-              <div className="stat-label">Research Papers</div>
-              <div className="stat-description">Latest academic research and publications</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-icon">👨‍🎓</div>
-              <div className="stat-number">25,000+</div>
-              <div className="stat-label">Active Users</div>
-              <div className="stat-description">Students and researchers worldwide</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-icon">🌍</div>
-              <div className="stat-number">150+</div>
-              <div className="stat-label">Universities</div>
-              <div className="stat-description">Partner institutions globally</div>
-            </div>
+            <div className="stat-item"><div className="stat-icon">📚</div><div className="stat-number">50,000+</div><div className="stat-label">Digital Books</div><div className="stat-description">Comprehensive collection across all disciplines</div></div>
+            <div className="stat-item"><div className="stat-icon">🔬</div><div className="stat-number">15,000+</div><div className="stat-label">Research Papers</div><div className="stat-description">Latest academic research and publications</div></div>
+            <div className="stat-item"><div className="stat-icon">👨‍🎓</div><div className="stat-number">25,000+</div><div className="stat-label">Active Users</div><div className="stat-description">Students and researchers worldwide</div></div>
+            <div className="stat-item"><div className="stat-icon">🌍</div><div className="stat-number">150+</div><div className="stat-label">Universities</div><div className="stat-description">Partner institutions globally</div></div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="cta">
         <div className="cta-container">
           <div className="cta-content">
-            <h2 className="cta-title">
-              Ready to Transform Your Learning Experience?
-            </h2>
+            <h2 className="cta-title">Ready to Transform Your Learning Experience?</h2>
             <p className="cta-description">
               Join our academic community today and get unlimited access to thousands of digital resources, 
               research tools, and collaborative features.
             </p>
-
             <div className="cta-buttons">
               <NavLink to='/Log'><button className="btn btn-white btn-large">
-                <LogoB/>&nbsp;&nbsp; Get Started &nbsp;&nbsp;&nbsp;<FaCircleChevronRight/>
+                <LogoB />&nbsp;&nbsp; Get Started &nbsp;&nbsp;&nbsp;<FaCircleChevronRight />
               </button></NavLink>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Footer */}
       <footer className="footer">
