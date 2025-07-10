@@ -28,7 +28,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/send-otp", {
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email }),
@@ -52,7 +52,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/verify-otp-signup", {
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/verify-otp-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, otp: otpInput }),
