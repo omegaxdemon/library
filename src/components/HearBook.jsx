@@ -43,15 +43,9 @@ const HearBook = () => {
 
   if (!book) return null;
 
-  // ✅ Cloudinary or Local Audio Link
-  const audioUrl = book.link.startsWith("http")
-    ? book.link
-    : `https://library-backend-fwfr.onrender.com${book.link}`;
-
-  // ✅ Cloudinary or Local Cover
-  const coverUrl = book.cover.startsWith("http")
-    ? book.cover
-    : `https://library-backend-fwfr.onrender.com${book.cover}`;
+  // ✅ Always Cloudinary-based link now
+  const audioUrl = book.link;
+  const coverUrl = book.cover;
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
