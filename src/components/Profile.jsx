@@ -23,31 +23,54 @@ const Profile = () => {
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    if (selectedFile) formData.append("profilePic", selectedFile);
-    formData.append("preference", preference);
+  // (use your exact file but replace handleSave with this Cloudinary-based version)
+const handleSave = async (e) => {
+  e.preventDefault();
+  let uploadedUrl = profilePic;
 
-    try {
-      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
-        method: "PUT",
-        body: formData,
-      });
+  if (selectedFile) {
+    const cloudForm = new FormData();
+    cloudForm.append("file", selectedFile);
+    cloudForm.append("upload_preset", "elibrary");
 
-      const data = await res.json();
+    const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
+      method: "POST",
+      body: cloudForm,
+    });
 
-      if (res.ok) {
-        alert("Profile updated successfully!");
-        login(data.user);
-      } else {
-        alert(data.msg || "Failed to update");
-      }
-    } catch (err) {
-      console.error("Update failed", err);
-      alert("Something went wrong");
+    const cloudData = await cloudRes.json();
+
+    if (cloudRes.ok) {
+      uploadedUrl = cloudData.secure_url;
+    } else {
+      alert("Failed to upload profile image.");
+      return;
     }
-  };
+  }
+
+  try {
+    const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        profilePic: uploadedUrl,
+        preference,
+      }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("Profile updated successfully!");
+      login(data.user);
+    } else {
+      alert(data.msg || "Failed to update");
+    }
+  } catch (err) {
+    console.error("Update failed", err);
+    alert("Something went wrong");
+  }
+};
+
 
   const handlePaperUpload = async (e) => {
     e.preventDefault();
