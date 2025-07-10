@@ -41,7 +41,10 @@ const ReadBook = () => {
 
   if (!book) return null;
 
-  const pdfUrl = `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
+  // ✅ Use direct Cloudinary/public URL if available, fallback to backend route
+  const pdfUrl = book.link.startsWith("http")
+    ? book.link
+    : `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
 
   return (
     <>
@@ -69,7 +72,7 @@ const ReadBook = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IoMdDownload/> Download PDF
+            <IoMdDownload /> Download PDF
           </a>
         </main>
       </div>
