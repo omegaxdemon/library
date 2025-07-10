@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import Nav from './nav/Nav';
 import './profile.css';
-import { useNavigate } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 const Profile = () => {
   const { user, login, logout } = useAuth();
@@ -23,54 +22,53 @@ const Profile = () => {
     }
   };
 
-  // (use your exact file but replace handleSave with this Cloudinary-based version)
-const handleSave = async (e) => {
-  e.preventDefault();
-  let uploadedUrl = profilePic;
+  const handleSave = async (e) => {
+    e.preventDefault();
+    let uploadedUrl = user?.profilePic;
 
-  if (selectedFile) {
-    const cloudForm = new FormData();
-    cloudForm.append("file", selectedFile);
-    cloudForm.append("upload_preset", "elibrary");
+    if (selectedFile) {
+      const cloudForm = new FormData();
+      cloudForm.append("file", selectedFile);
+      cloudForm.append("upload_preset", "elibrary");
 
-    const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
-      method: "POST",
-      body: cloudForm,
-    });
+      const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
+        method: "POST",
+        body: cloudForm,
+      });
 
-    const cloudData = await cloudRes.json();
+      const cloudData = await cloudRes.json();
 
-    if (cloudRes.ok) {
-      uploadedUrl = cloudData.secure_url;
-    } else {
-      alert("Failed to upload profile image.");
-      return;
+      if (cloudRes.ok) {
+        uploadedUrl = cloudData.secure_url;
+      } else {
+        alert("Failed to upload profile image.");
+        return;
+      }
     }
-  }
 
-  try {
-    const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        profilePic: uploadedUrl,
-        preference,
-      }),
-    });
+    try {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profilePic: uploadedUrl,
+          preference,
+        }),
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Profile updated successfully!");
-      login(data.user);
-    } else {
-      alert(data.msg || "Failed to update");
+      const data = await res.json();
+      if (res.ok) {
+        alert("Profile updated successfully!");
+        login(data.user); // Save to localStorage
+        window.location.reload(); // 🔁 Force refresh to update navbar/profile image
+      } else {
+        alert(data.msg || "Failed to update");
+      }
+    } catch (err) {
+      console.error("Update failed", err);
+      alert("Something went wrong");
     }
-  } catch (err) {
-    console.error("Update failed", err);
-    alert("Something went wrong");
-  }
-};
-
+  };
 
   const handlePaperUpload = async (e) => {
     e.preventDefault();
@@ -80,10 +78,9 @@ const handleSave = async (e) => {
     }
 
     try {
-      // ✅ Upload to Cloudinary
       const cloudForm = new FormData();
       cloudForm.append("file", paperFile);
-      cloudForm.append("upload_preset", "elibrary"); // Your unsigned preset
+      cloudForm.append("upload_preset", "elibrary");
 
       const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/raw/upload", {
         method: "POST",
@@ -96,7 +93,6 @@ const handleSave = async (e) => {
 
       const paperUrl = cloudData.secure_url;
 
-      // ✅ Save to backend DB
       const backendRes = await fetch("https://library-backend-fwfr.onrender.com/api/upload-paper", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,7 +135,7 @@ const handleSave = async (e) => {
             </h2>
             <br />
             <div className="profile-pic-section">
-              <img src={profilePic} alt="Admin Profile" className="profile-pic" />
+              <img src={user?.profilePic || "/default-avatar.png"} alt="Admin Profile" className="profile-pic" />
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="file" accept="image/*" onChange={handlePicChange} />
               <button onClick={handleSave} className="save-btn" style={{ marginTop: "10px" }}>
@@ -176,7 +172,7 @@ const handleSave = async (e) => {
           <h2>Your Profile</h2>
 
           <div className="profile-pic-section">
-            <img src={profilePic} alt="Profile" className="profile-pic" />
+            <img src={user?.profilePic || "/default-avatar.png"} alt="Profile" className="profile-pic" />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="file" accept="image/*" onChange={handlePicChange} />
           </div>
