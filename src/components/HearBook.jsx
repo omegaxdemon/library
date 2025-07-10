@@ -43,7 +43,15 @@ const HearBook = () => {
 
   if (!book) return null;
 
-  const audioUrl = `http://localhost:5000${book.link}`;
+  // ✅ Cloudinary or Local Audio Link
+  const audioUrl = book.link.startsWith("http")
+    ? book.link
+    : `https://library-backend-fwfr.onrender.com${book.link}`;
+
+  // ✅ Cloudinary or Local Cover
+  const coverUrl = book.cover.startsWith("http")
+    ? book.cover
+    : `https://library-backend-fwfr.onrender.com${book.cover}`;
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -95,7 +103,7 @@ const HearBook = () => {
           <p>by {book.author}</p>
 
           <img
-            src={`http://localhost:5000${book.cover}`}
+            src={coverUrl}
             alt="Audiobook Cover"
             className="audio-cover"
           />
