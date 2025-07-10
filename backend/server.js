@@ -116,30 +116,33 @@ app.post("/api/signin", async (req, res) => {
 
 /* ======================= PROFILE UPDATE ======================= */
 
-app.put("/api/profile/:email", uploadTemp.single("profilePic"), async (req, res) => {
+app.put("/api/profile/:email", async (req, res) => {
   try {
     const { email } = req.params;
-    const updateData = {};
+    const { profilePic, preference } = req.body;
 
-    if (req.file) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-        folder: "uploads",
-        public_id: `${email.replace(/[@.]/g, "_")}_profile`,
-      });
-      fs.unlinkSync(req.file.path);
-      updateData.profilePic = uploadResult.secure_url;
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      {
+        $set: {
+          profilePic,
+          preference,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ msg: "User not found" });
     }
-
-    if (req.body.preference) updateData.preference = req.body.preference;
-
-    const updatedUser = await User.findOneAndUpdate({ email }, updateData, { new: true });
-    if (!updatedUser) return res.status(404).json({ msg: "User not found" });
 
     res.json({ msg: "Profile updated", user: updatedUser });
   } catch (err) {
-    res.status(500).json({ msg: "Error updating profile", error: err.message });
+    console.error("Profile update error:", err);
+    res.status(500).json({ msg: "Server error" });
   }
 });
+
 
 /* ======================= BOOK UPLOADS ======================= */
 
