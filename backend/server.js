@@ -16,32 +16,26 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/books", express.static(path.join(__dirname, "books")));
 
 const nodemailer = require("nodemailer");
-
 const otpStore = {}; // In-memory store for email-OTP pairs
 
-// ✉️ Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "codespartanssxc@gmail.com",     
-    pass: "wpempwhavufayvtk"          
+    user: "codespartanssxc@gmail.com",
+    pass: "wpempwhavufayvtk"
   }
 });
 
 const cloudinary = require('cloudinary').v2;
-
 cloudinary.config({
   cloud_name: 'dl6qmklgj',
   api_key: '643459465832868',
   api_secret: 'NyYp7Jvo6lM28OQwCg9uKSe4lHE',
 });
 
-
-
 mongoose.connect('mongodb+srv://omegaxdemon:Debottam%408@elibrary.snzqi8b.mongodb.net/eLibrary?retryWrites=true&w=majority&appName=eLibrary');
 
-
-// ✅ Multer for profile uploads
+// ✅ Multer for profile uploads (local)
 const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => {
@@ -51,35 +45,8 @@ const profileStorage = multer.diskStorage({
 });
 const uploadProfile = multer({ storage: profileStorage });
 
-// ✅ Multer for paper uploads (MODIFIED)
-const paperStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const title = req.body.title.trim();
-    const folderPath = path.join(__dirname, "books", title);
-    fs.mkdirSync(folderPath, { recursive: true });
-    cb(null, folderPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${req.body.title.trim()}.pdf`);
-  },
-});
-const uploadPaper = multer({ storage: paperStorage });
-
-// ✅ Multer for admin book/audio upload
-const adminStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const title = req.body.title.trim();
-    const folderPath = path.join(__dirname, "books", title);
-    fs.mkdirSync(folderPath, { recursive: true });
-    cb(null, folderPath);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const field = file.fieldname === "bookFile" ? req.body.title : "cover";
-    cb(null, `${field}${ext}`);
-  },
-});
-const uploadAdmin = multer({ storage: adminStorage });
+// ✅ Multer temp storage for Cloudinary uploads
+const uploadTemp = multer({ dest: "temp/" });
 
 // ✅ Sign Up
 app.post("/api/signup", async (req, res) => {
@@ -142,7 +109,7 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-// ✅ Serve Book File (PDF or Audio)
+// ✅ Serve Book File (local fallback)
 app.get("/api/bookfile/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -153,10 +120,7 @@ app.get("/api/bookfile/:id", async (req, res) => {
     const filePath = path.join(__dirname, relativePath);
     if (!fs.existsSync(filePath)) return res.status(404).send("File not found");
 
-    // 🔍 Detect file extension
     const ext = path.extname(filePath).toLowerCase();
-
-    // ✅ Set correct Content-Type
     if (ext === ".pdf") {
       res.setHeader("Content-Type", "application/pdf");
     } else if (ext === ".mp3") {
@@ -169,7 +133,6 @@ app.get("/api/bookfile/:id", async (req, res) => {
       res.setHeader("Content-Type", "application/octet-stream");
     }
 
-    // 📂 Stream the file
     const stream = fs.createReadStream(filePath);
     stream.pipe(res);
   } catch (err) {
@@ -178,21 +141,26 @@ app.get("/api/bookfile/:id", async (req, res) => {
   }
 });
 
-
-// ✅ Upload Research Paper (MODIFIED)
-app.post("/api/upload-paper", uploadPaper.single("paper"), async (req, res) => {
+// ✅ Upload Research Paper to Cloudinary
+app.post("/api/upload-paper", uploadTemp.single("paper"), async (req, res) => {
   try {
     const { title, uploader } = req.body;
     if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
 
-    const filePath = `/books/${title}/${title}.pdf`;
+    const cloudResult = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "auto",
+      folder: "eLibraryPapers",
+      public_id: title.replace(/\s+/g, "_"),
+    });
+
+    fs.unlinkSync(req.file.path); // cleanup
 
     const book = new Book({
       title,
       author: uploader,
       category: "Research Paper",
-      link: filePath,
-      cover: "/uploads/research-default.jpg",
+      link: cloudResult.secure_url,
+      cover: "https://res.cloudinary.com/dl6qmklgj/image/upload/v1719999999/eLibraryPapers/research-default.jpg"
     });
 
     await book.save();
@@ -202,28 +170,40 @@ app.post("/api/upload-paper", uploadPaper.single("paper"), async (req, res) => {
   }
 });
 
-// ✅ Admin Upload Book/Audio
-app.post("/api/admin/upload", uploadAdmin.fields([
+// ✅ Admin Upload Book/Audio using Cloudinary
+app.post("/api/admin/upload", uploadTemp.fields([
   { name: "bookFile", maxCount: 1 },
   { name: "coverImage", maxCount: 1 }
 ]), async (req, res) => {
   try {
     const { title, author, category } = req.body;
-    if (!req.files.bookFile || !req.files.coverImage) {
+    const bookFile = req.files.bookFile?.[0];
+    const coverFile = req.files.coverImage?.[0];
+
+    if (!bookFile || !coverFile) {
       return res.status(400).json({ msg: "Book file and cover are required" });
     }
 
-    const fileExt = path.extname(req.files.bookFile[0].originalname);
-    const isAudio = fileExt === ".mp3" || fileExt === ".wav"|| fileExt === ".m4a";
-    const filePath = `/books/${title}/${title}${fileExt}`;
-    const coverPath = `/books/${title}/${req.files.coverImage[0].filename}`;
+    const bookUpload = await cloudinary.uploader.upload(bookFile.path, {
+      resource_type: "auto",
+      folder: "eLibraryBooks",
+      public_id: title.replace(/\s+/g, "_"),
+    });
+
+    const coverUpload = await cloudinary.uploader.upload(coverFile.path, {
+      folder: "eLibraryBooks",
+      public_id: `${title.replace(/\s+/g, "_")}_cover`,
+    });
+
+    fs.unlinkSync(bookFile.path);
+    fs.unlinkSync(coverFile.path);
 
     const book = new Book({
       title,
       author,
       category,
-      link: filePath,
-      cover: coverPath,
+      link: bookUpload.secure_url,
+      cover: coverUpload.secure_url,
     });
 
     await book.save();
@@ -234,7 +214,7 @@ app.post("/api/admin/upload", uploadAdmin.fields([
   }
 });
 
-// ✅ Admin Delete Book/Audio
+// ✅ Admin Delete Book/Audio (local fallback delete only)
 app.delete("/api/admin/delete/:id", async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -253,7 +233,6 @@ app.delete("/api/admin/delete/:id", async (req, res) => {
 });
 
 // ✅ Admin Manage Users
-//Get all users
 app.get("/api/admin/users", async (req, res) => {
   try {
     const users = await User.find({ userType: { $ne: "admin" } });
@@ -262,7 +241,6 @@ app.get("/api/admin/users", async (req, res) => {
     res.status(500).json({ msg: "Error fetching users", error: err.message });
   }
 });
-// Update user role
 app.put("/api/admin/users/:email", async (req, res) => {
   try {
     const { email } = req.params;
@@ -281,7 +259,6 @@ app.put("/api/admin/users/:email", async (req, res) => {
     res.status(500).json({ msg: "Update failed", error: err.message });
   }
 });
-// Delete user
 app.delete("/api/admin/users/:email", async (req, res) => {
   try {
     const { email } = req.params;
@@ -298,14 +275,13 @@ app.delete("/api/admin/users/:email", async (req, res) => {
 // 🚀 Send OTP
 app.post("/api/send-otp", async (req, res) => {
   const { email } = req.body;
-
   if (!email) return res.status(400).json({ msg: "Email required" });
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   otpStore[email] = otp;
 
   const mailOptions = {
-    from: "codespartanssxc@gmail.com", // ✅ Your Gmail
+    from: "codespartanssxc@gmail.com",
     to: email,
     subject: "Your OTP for Registration",
     text: `Your OTP for registration is ${otp}. It is valid for 5 minutes.`,
@@ -314,12 +290,7 @@ app.post("/api/send-otp", async (req, res) => {
   try {
     await transporter.sendMail(mailOptions);
     res.json({ msg: "OTP sent" });
-
-    // Optional: Clear OTP after 5 minutes
-    setTimeout(() => {
-      delete otpStore[email];
-    }, 5 * 60 * 1000);
-
+    setTimeout(() => delete otpStore[email], 5 * 60 * 1000);
   } catch (error) {
     console.error("Error sending OTP:", error);
     res.status(500).json({ msg: "Failed to send OTP" });
@@ -343,14 +314,11 @@ app.post("/api/verify-otp-signup", async (req, res) => {
 
     delete otpStore[email];
     res.status(201).json({ msg: "User created", user: newUser });
-
   } catch (err) {
     console.error("Signup error:", err);
     res.status(500).json({ msg: "Server error", error: err.message });
   }
 });
-
-
 
 // ✅ Start server
 const PORT = 5000;
