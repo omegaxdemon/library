@@ -22,7 +22,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/books");
+        const res = await fetch("https://library-backend-fwfr.onrender.com/api/books");
         const allBooks = await res.json();
         const latestBooks = allBooks.reverse().slice(0, 6);
 
@@ -64,7 +64,7 @@ const HomePage = () => {
   }
 
   // Open PDF or audio (mp3, wav) directly in browser tab
-  const fileUrl = `http://localhost:5000/api/bookfile/${book._id}`;
+  const fileUrl = `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
   window.open(fileUrl, "_blank");
 };
 
