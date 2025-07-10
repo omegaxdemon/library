@@ -56,25 +56,42 @@ const Profile = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", paperTitle);
-    formData.append("paper", paperFile);
-    formData.append("uploader", user.name);
-
     try {
-      const res = await fetch("https://library-backend-fwfr.onrender.com/api/upload-paper", {
+      // ✅ Upload to Cloudinary
+      const cloudForm = new FormData();
+      cloudForm.append("file", paperFile);
+      cloudForm.append("upload_preset", "elibrary"); // Your unsigned preset
+
+      const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/raw/upload", {
         method: "POST",
-        body: formData,
+        body: cloudForm,
       });
 
-      const data = await res.json();
+      const cloudData = await cloudRes.json();
 
-      if (res.ok) {
+      if (!cloudRes.ok) throw new Error("Cloudinary upload failed");
+
+      const paperUrl = cloudData.secure_url;
+
+      // ✅ Save to backend DB
+      const backendRes = await fetch("https://library-backend-fwfr.onrender.com/api/upload-paper", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: paperTitle,
+          uploader: user.name,
+          link: paperUrl,
+        }),
+      });
+
+      const backendData = await backendRes.json();
+
+      if (backendRes.ok) {
         alert("Paper uploaded successfully!");
         setPaperTitle('');
         setPaperFile(null);
       } else {
-        alert(data.msg || "Upload failed.");
+        alert(backendData.msg || "Upload failed.");
       }
     } catch (err) {
       console.error("Paper upload failed", err);
@@ -91,35 +108,38 @@ const Profile = () => {
   if (user?.userType === "admin") {
     return (
       <>
-      <Nav />
-      <div className="profile-container">
-        <div className="profile-card">
-          <h2 style={{fontWeight:"800",fontFamily:"Agency FB",fontSize:"1.9rem"}}>Welcome Back Admin {user.name}</h2>
-          <br></br>
-          <div className="profile-pic-section">
-            <img src={profilePic} alt="Admin Profile" className="profile-pic" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="file" accept="image/*" onChange={handlePicChange} />
-            <button onClick={handleSave} className="save-btn" style={{ marginTop: "10px" }}>
-              Save Profile Picture
-            </button>
-          </div>
+        <Nav />
+        <div className="profile-container">
+          <div className="profile-card">
+            <h2 style={{ fontWeight: "800", fontFamily: "Agency FB", fontSize: "1.9rem" }}>
+              Welcome Back Admin {user.name}
+            </h2>
+            <br />
+            <div className="profile-pic-section">
+              <img src={profilePic} alt="Admin Profile" className="profile-pic" />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="file" accept="image/*" onChange={handlePicChange} />
+              <button onClick={handleSave} className="save-btn" style={{ marginTop: "10px" }}>
+                Save Profile Picture
+              </button>
+            </div>
 
-          <div className="admin-controls">
-            <NavLink to="/UploadBook"><button className="upload-btn">
-              ➕ Upload Book or Audiobook
-            </button></NavLink>
-            <NavLink to="/DeleteBook"><button className="upload-btn">
-              ❌ Delete Existing Book
-            </button></NavLink>
-            <NavLink to="/ManageUsers"><button className="upload-btn">
-              👥 Manage Users
-            </button></NavLink>
-            <button className="upload-btn" onClick={handleLogout}>
-              🔓 Logout
-            </button>
+            <div className="admin-controls">
+              <NavLink to="/UploadBook">
+                <button className="upload-btn">➕ Upload Book or Audiobook</button>
+              </NavLink>
+              <NavLink to="/DeleteBook">
+                <button className="upload-btn">❌ Delete Existing Book</button>
+              </NavLink>
+              <NavLink to="/ManageUsers">
+                <button className="upload-btn">👥 Manage Users</button>
+              </NavLink>
+              <button className="upload-btn" onClick={handleLogout}>
+                🔓 Logout
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </>
     );
   }
@@ -133,7 +153,8 @@ const Profile = () => {
           <h2>Your Profile</h2>
 
           <div className="profile-pic-section">
-            <img src={profilePic} alt="Profile" className="profile-pic" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <img src={profilePic} alt="Profile" className="profile-pic" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="file" accept="image/*" onChange={handlePicChange} />
           </div>
 
@@ -189,7 +210,6 @@ const Profile = () => {
           <div style={{ marginTop: "30px", textAlign: "center" }}>
             <button onClick={handleLogout} className="upload-btn">Logout</button>
           </div>
-
         </div>
       </div>
     </>
