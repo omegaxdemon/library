@@ -8,7 +8,7 @@ const DeleteBook = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/books");
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/books");
       const data = await res.json();
       setBooks(data);
       setLoading(false); // ✅ Stop spinner
@@ -27,7 +27,7 @@ const DeleteBook = () => {
     if (!confirm) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/delete/${bookId}`, {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/admin/delete/${bookId}`, {
         method: "DELETE",
       });
 
