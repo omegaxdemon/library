@@ -1,0 +1,227 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to top right, white, #f9fbfd, #e4efff);
+  font-family: 'Public Sans', 'Noto Sans', sans-serif;
+}
+
+header {
+  width: 94.5%;
+  padding: 1rem 2.5rem;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dbe0e6;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+header nav {
+  display: flex;
+  gap: 2rem;
+}
+
+header nav a {
+  text-decoration: none;
+  color: #111418;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+header nav a:hover {
+  color: #1273f1;
+}
+
+main {
+  flex: 1;
+  padding-top: 2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.welcome {
+  margin-bottom: 2rem;
+}
+
+.welcome h2 {
+  font-size: 2rem;
+  color: #111418;
+  margin: 0;
+}
+
+.welcome span {
+  color: #1273f1;
+}
+
+.welcome p {
+  margin-top: 0.5rem;
+  color: #60728a;
+  font-size: 1rem;
+}
+
+h2.section-title {
+  font-size: 1.5rem;
+  color: #111418;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar {
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dbe0e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #111418;
+}
+
+.search-bar input::placeholder {
+  color: #60728a;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.tag {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tag.all {
+  background-color: #1273f1;
+  color: white;
+}
+
+.tag:not(.all) {
+  background-color: #e4efff;
+  color: #1273f1;
+}
+
+.tag:not(.all):hover {
+  background-color: #d0e3ff;
+}
+
+.books {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.book-card {
+  background: white;
+  border: 1px solid #dbe0e6;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* ✅ Fix alignment */
+  text-align: center;        /* ✅ Center all text */
+}
+
+.book-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.book-card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111418;
+  margin-bottom: 0.3rem;
+}
+
+.book-card p {
+  font-size: 0.8rem;
+  color: #60728a;
+  margin-bottom: 0.8rem;
+}
+
+.book-card a {
+  background-color: #1273f1;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.book-card a:hover {
+  background-color: #0f62d1;
+}
+
+input, select {
+  background-color: white;
+  color: #111418;
+}
+
+h3, h2, h1 {
+  color: #111418;
+}
+
+.container {
+  margin: 0 auto;
+}
+
+.dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to top right, white, #f9fbfd, #e4efff); /* ✅ Fix background */
+  padding-bottom: 50px; /* ✅ Prevents background cut-off */
+}
+
+.book-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  width: 100%; /* optional: ensures alignment */
+}
+
+.book-actions .btn {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border: none;
+  background-color: #1273f1;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.book-actions .btn:hover {
+  background-color: #0e5ac7;
+}
+
+.tag.active {
+  background-color: #4338ca;
+  color: white;
+}

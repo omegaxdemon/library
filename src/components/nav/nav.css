@@ -1,0 +1,78 @@
+/* Custom Navbar Base */
+.custom-navbar {
+    background: linear-gradient(135deg, #2563eb, #4338ca);
+    font-family: 'Agency FB';
+}
+
+/* Restore padding and spacing for desktop */
+@media (min-width: 992px) {
+    .custom-navbar .container-fluid {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+    .nav-link-custom {
+        font-size: 1.2rem;
+    }
+
+    #title {
+        font-size: 1.8rem;
+    }
+}
+
+/* White Nav Links */
+.nav-link-custom {
+    color: white !important;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.nav-link-custom:hover {
+    color: #e0e0e0 !important;
+    text-decoration: underline;
+}
+
+/* Buttons */
+.but {
+    background-color: #ffffff;
+    color: #4338ca;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.but:hover {
+    transform: scale(1.05);
+    transition: background-color 0.3s ease;
+}
+
+/* Mobile: Collapse fix */
+@media (max-width: 991px) {
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .navbar-collapse {
+        /* background-color: #4338ca; */
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .nav-link-custom {
+        font-size: 1.4rem;
+    }
+
+    #title {
+        font-size: 1.8rem;
+    }
+}
+#major{
+    padding: 20px 12px;
+}

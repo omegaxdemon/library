@@ -1,0 +1,59 @@
+
+.terms-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.terms-title {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #007bff;
+  text-align: center;
+}
+
+.terms-date {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.terms-section {
+  margin-bottom: 30px;
+}
+
+.terms-section h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #2563eb;
+}
+
+.terms-section p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease-out forwards;
+}
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+#root{
+  background-color: #ffffff;
+}

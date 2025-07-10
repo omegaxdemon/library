@@ -1,0 +1,70 @@
+.readbook-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(to top right, #ffffff, #e6f0ff);
+  padding: 20px;
+}
+
+.sidebar {
+  width: 200px;
+  padding: 20px;
+  background-color: #f5f7fb;
+  border-right: 1px solid #dbe0e6;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar button {
+  padding: 10px;
+  font-size: 0.9rem;
+  background-color: #1273f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.sidebar button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.sidebar button:hover:not(:disabled) {
+  background-color: #0e5ac7;
+}
+
+.pdf-viewer {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.pdf-viewer h2 {
+  margin-bottom: 20px;
+  color: #111418;
+}
+
+.pdf-viewer canvas {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4338ca;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #352dac;
+}

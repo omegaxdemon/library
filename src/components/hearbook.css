@@ -1,0 +1,104 @@
+.hearbook-wrapper {
+  display: flex;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 180px;
+  padding: 20px;
+}
+
+.audio-viewer {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.audio-cover {
+  max-width: 250px;
+  border-radius: 8px;
+  margin: 20px auto;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 30px auto;
+}
+
+.player-controls button {
+  background-color: #ffffff;
+  color: #357edd;
+  border: 2px solid #357edd;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.player-controls button:hover {
+  background-color: #357edd;
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+
+.player-controls button:hover {
+  background-color: #245bb5;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.download-btn:hover {
+  background-color: #1c7c31;
+}
+
+.audio-cover {
+  max-width: 280px;
+  border-radius: 12px;
+  margin: 20px auto;
+  display: block;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.audio-viewer h2 {
+  margin-top: 15px;
+  font-size: 28px;
+  color: #222;
+}
+/* Stylish Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 25px;
+  margin: 20px auto;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #6e8efb, #a777e3);
+  transition: width 0.3s ease-in-out;
+  border-radius: 25px;
+}
