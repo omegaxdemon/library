@@ -29,10 +29,8 @@ const transporter = nodemailer.createTransport({
 });
 
 
-mongoose.connect("mongodb://localhost:27017/eLibrary", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb+srv://omegaxdemon:Debottam%408@elibrary.snzqi8b.mongodb.net/eLibrary?retryWrites=true&w=majority&appName=eLibrary');
+
 
 // ✅ Multer for profile uploads
 const profileStorage = multer.diskStorage({
