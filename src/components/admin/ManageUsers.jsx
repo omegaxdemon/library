@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./admin.css";
-import Spinner from "../Spinner"; // ✅ Import spinner
+import Spinner from "../Spinner";
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editedUser, setEditedUser] = useState({ email: "", userType: "" });
-  const [loading, setLoading] = useState(true); // ✅ Spinner state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -17,10 +17,10 @@ const ManageUsers = () => {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/admin/users");
       const data = await res.json();
       setUsers(data);
-      setLoading(false); // ✅ Stop spinner
+      setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
-      setLoading(false); // ✅ Stop spinner even on error
+      setLoading(false);
     }
   };
 
@@ -77,7 +77,7 @@ const ManageUsers = () => {
     }
   };
 
-  if (loading) return <Spinner />; // ✅ Show spinner while loading
+  if (loading) return <Spinner />;
 
   return (
     <div className="admin-users-container">
