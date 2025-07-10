@@ -22,7 +22,7 @@ const ReadBook = () => {
 
   // 📚 Fetch the specific book info by ID
   useEffect(() => {
-    fetch("http://localhost:5000/api/books")
+    fetch("https://library-backend-fwfr.onrender.com/api/books")
       .then((res) => res.json())
       .then((data) => {
         const match = data.find((b) => b._id === bookId);
@@ -41,7 +41,7 @@ const ReadBook = () => {
 
   if (!book) return null;
 
-  const pdfUrl = `http://localhost:5000/api/bookfile/${book._id}`;
+  const pdfUrl = `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
 
   return (
     <>
