@@ -14,7 +14,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/users");
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/admin/users");
       const data = await res.json();
       setUsers(data);
       setLoading(false); // ✅ Stop spinner
@@ -28,7 +28,7 @@ const ManageUsers = () => {
     if (!window.confirm(`Are you sure you want to delete ${email}?`)) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/users/${email}`, {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/admin/users/${email}`, {
         method: "DELETE",
       });
 
@@ -57,7 +57,7 @@ const ManageUsers = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/users/${users[editingIndex].email}`, {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/admin/users/${users[editingIndex].email}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
