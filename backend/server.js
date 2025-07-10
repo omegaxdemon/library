@@ -28,6 +28,15 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: 'dl6qmklgj',
+  api_key: '643459465832868',
+  api_secret: 'NyYp7Jvo6lM28OQwCg9uKSe4lHE',
+});
+
+
 
 mongoose.connect('mongodb+srv://omegaxdemon:Debottam%408@elibrary.snzqi8b.mongodb.net/eLibrary?retryWrites=true&w=majority&appName=eLibrary');
 
