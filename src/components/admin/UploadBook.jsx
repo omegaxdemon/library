@@ -32,14 +32,14 @@ const UploadBook = () => {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Book uploaded successfully!");
+        alert("✅ Book uploaded successfully!");
         setTitle('');
         setAuthor('');
         setCategory('');
         setBookFile(null);
         setCoverImage(null);
       } else {
-        alert(data.msg || "Upload failed");
+        alert(data.msg || "❌ Upload failed");
       }
     } catch (err) {
       console.error("Error uploading:", err);
@@ -61,12 +61,22 @@ const UploadBook = () => {
           <label>Category:</label>
           <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
 
-          <label>Upload Book (PDF or MP3):</label>
-          <input type="file" accept=".pdf,.mp3" onChange={(e) => setBookFile(e.target.files[0])} required />
+          <label>Upload Book (PDF, MP3, WAV, M4A):</label>
+          <input
+            type="file"
+            accept=".pdf,.mp3,.wav,.m4a"
+            onChange={(e) => setBookFile(e.target.files[0])}
+            required
+          />
 
           <label>Cover Image:</label>
-          <input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files[0])} required />
-            <br></br>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCoverImage(e.target.files[0])}
+            required
+          />
+          <br />
           <center><button type="submit" className="upload-btn">Upload</button></center>
         </form>
       </div>
