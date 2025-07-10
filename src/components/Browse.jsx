@@ -15,7 +15,7 @@ const Student_dashboard = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/books")
+    fetch("https://library-backend-fwfr.onrender.com/api/books")
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
