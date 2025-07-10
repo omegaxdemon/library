@@ -24,7 +24,7 @@ const UploadBook = () => {
     formData.append("coverImage", coverImage);
 
     try {
-      const res = await fetch("http://localhost:5000/api/admin/upload", {
+      const res = await fetch("https://library-backend-fwfr.onrender.com/api/admin/upload", {
         method: "POST",
         body: formData,
       });
