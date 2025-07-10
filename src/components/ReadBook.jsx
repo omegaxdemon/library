@@ -50,13 +50,14 @@ const ReadBook = () => {
 
         <main className="pdf-viewer">
           <h2>{book.title}</h2>
-          <iframe
-            src={pdfUrl}
-            width="100%"
-            height="800px"
-            title="PDF Viewer"
-            style={{ border: "1px solid #ccc", borderRadius: "8px" }}
-          />
+         <iframe
+  src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
+  width="100%"
+  height="800px"
+  title="PDF Viewer"
+  style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+/>
+
           <a
             href={pdfUrl}
             className="download-btn"
