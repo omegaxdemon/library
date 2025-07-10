@@ -43,8 +43,7 @@ const HearBook = () => {
 
   if (!book) return null;
 
-  // ✅ Always Cloudinary-based link now
-  const audioUrl = book.link;
+  const audioUrl = encodeURI(book.link);
   const coverUrl = book.cover;
 
   const togglePlayPause = () => {
@@ -96,11 +95,7 @@ const HearBook = () => {
           <h2>{book.title}</h2>
           <p>by {book.author}</p>
 
-          <img
-            src={coverUrl}
-            alt="Audiobook Cover"
-            className="audio-cover"
-          />
+          <img src={coverUrl} alt="Audiobook Cover" className="audio-cover" />
 
           <audio
             ref={audioRef}
@@ -117,7 +112,6 @@ const HearBook = () => {
             <button onClick={() => skipTime(10)}><FaForward /></button>
           </div>
 
-          {/* 🟦 Stylish Progress Bar */}
           <div className="progress-container" onClick={handleProgressClick}>
             <div className="progress-bar" style={{ width: `${progress}%` }}></div>
           </div>
