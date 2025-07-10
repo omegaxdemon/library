@@ -9,10 +9,8 @@ const ReadBook = () => {
   const { bookId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-
   const [book, setBook] = useState(null);
 
-  // 🔒 Redirect to login if not logged in
   useEffect(() => {
     if (!user) {
       alert("You must be logged in to read this book.");
@@ -20,7 +18,6 @@ const ReadBook = () => {
     }
   }, [user]);
 
-  // 📚 Fetch the specific book info by ID
   useEffect(() => {
     fetch("https://library-backend-fwfr.onrender.com/api/books")
       .then((res) => res.json())
@@ -41,10 +38,7 @@ const ReadBook = () => {
 
   if (!book) return null;
 
-  // ✅ Use direct Cloudinary/public URL if available, fallback to backend route
-  const pdfUrl = book.link.startsWith("http")
-    ? book.link
-    : `https://library-backend-fwfr.onrender.com/api/bookfile/${book._id}`;
+  const pdfUrl = book.link;
 
   return (
     <>
@@ -56,7 +50,6 @@ const ReadBook = () => {
 
         <main className="pdf-viewer">
           <h2>{book.title}</h2>
-
           <iframe
             src={pdfUrl}
             width="100%"
@@ -64,7 +57,6 @@ const ReadBook = () => {
             title="PDF Viewer"
             style={{ border: "1px solid #ccc", borderRadius: "8px" }}
           />
-
           <a
             href={pdfUrl}
             className="download-btn"
