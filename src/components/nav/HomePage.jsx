@@ -80,6 +80,7 @@ const HomePage = () => {
   if (loading) return <Spinner />;
 
   return (
+    <>
     <div className="page-container">
       {/* Hero Section */}
       <section className="hero">
