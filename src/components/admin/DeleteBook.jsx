@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './admin.css';
-import Spinner from '../Spinner'; // ✅ Spinner import
+import Spinner from '../Spinner';
 
 const DeleteBook = () => {
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ Loading state
+  const [loading, setLoading] = useState(true);
 
   const fetchBooks = async () => {
     try {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/books");
       const data = await res.json();
       setBooks(data);
-      setLoading(false); // ✅ Stop spinner
+      setLoading(false);
     } catch (err) {
       console.error("Failed to fetch books", err);
-      setLoading(false); // ✅ Stop spinner on error
+      setLoading(false);
     }
   };
 
@@ -45,7 +45,7 @@ const DeleteBook = () => {
     }
   };
 
-  if (loading) return <Spinner />; // ✅ Show spinner while loading
+  if (loading) return <Spinner />;
 
   return (
     <div className="admin-upload-container">
@@ -58,14 +58,14 @@ const DeleteBook = () => {
             {books.map((book) => (
               <div key={book._id} className="book-item">
                 <img
-                  src={`http://localhost:5000${book.cover}`}
+                  src={book.cover}
                   alt="cover"
                   className="book-cover"
                 />
                 <div className="book-info">
                   <h4>{book.title}</h4>
                   <p><strong>Author:</strong> {book.author}</p>
-                  <p><strong>Type:</strong> {book.link.endsWith(".mp3") ? "Audiobook" : "Book"}</p>
+                  <p><strong>Type:</strong> {book.link.endsWith(".mp3") || book.link.endsWith(".wav") || book.link.endsWith(".m4a") ? "Audiobook" : "Book"}</p>
                 </div>
                 <button className="delete-btn" onClick={() => handleDelete(book._id)}>🗑️ Delete</button>
               </div>
