@@ -30,6 +30,7 @@ const Profile = () => {
       const cloudForm = new FormData();
       cloudForm.append("file", selectedFile);
       cloudForm.append("upload_preset", "elibrary");
+      cloudForm.append("folder", "uploads");
 
       const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
         method: "POST",
