@@ -72,11 +72,7 @@ const Nav = () => {
             ) : (
               <li className="nav-item d-flex align-items-center">
                 <img
-                  src={
-                    user.profilePic && user.profilePic.startsWith("http")
-                      ? user.profilePic
-                      : "/default-avatar.png"
-                  }
+                  src={user?.profilePic || "/default-avatar.png"}
                   alt="Profile"
                   onClick={handleProfileClick}
                   style={{
