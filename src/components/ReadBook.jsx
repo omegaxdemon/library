@@ -38,7 +38,7 @@ const ReadBook = () => {
 
   if (!book) return null;
 
-  const pdfUrl = book.link;
+  const pdfUrl = encodeURI(book.link);
 
   return (
     <>
