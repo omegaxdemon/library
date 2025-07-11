@@ -168,7 +168,7 @@ app.post("/api/upload-paper", async (req, res) => {
       author: uploader,
       category: "Research Paper",
       link,
-      cover: "https://res.cloudinary.com/dl6qmklgj/image/upload/v1719999999/books/research-default.jpg"
+      cover: "https://res.cloudinary.com/dl6qmklgj/image/upload/v1752214020/research-default_lhazgb.jpg"
     });
 
     await book.save();
