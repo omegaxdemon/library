@@ -242,8 +242,9 @@ app.delete("/api/admin/delete/:id", async (req, res) => {
 
     for (const file of resources) {
       await cloudinary.uploader.destroy(file.public_id, {
-        resource_type: file.resource_type || "image"
-      });
+  resource_type: file.resource_type || (file.format === "pdf" ? "raw" : "image")
+  });
+
     }
 
     await Book.findByIdAndDelete(book._id);
