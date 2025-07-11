@@ -98,6 +98,8 @@ const handleSave = async (e) => {
       const cloudForm = new FormData();
       cloudForm.append("file", paperFile);
       cloudForm.append("upload_preset", "elibrary");
+      cloudForm.append("folder", `books/${paperTitle.replace(/\s+/g, "_")}`);
+
 
       const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/raw/upload", {
         method: "POST",
