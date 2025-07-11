@@ -63,7 +63,7 @@ const handleSave = async (e) => {
       if (res.ok) {
         alert("Profile updated successfully!");
         login(data.user); // Save to localStorage
-        window.location.reload(); // 🔁 Force refresh to update navbar/profile image
+        //window.location.reload(); // 🔁 Force refresh to update navbar/profile image
       } else {
         alert(data.msg || "Failed to update");
       }
