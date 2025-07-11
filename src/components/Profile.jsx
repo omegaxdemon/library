@@ -59,21 +59,7 @@ const handleSave = async (e) => {
       }),
     });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Profile updated successfully!");
-      login(data.user); // ✅ Updates context + localStorage
-    } else {
-      alert(data.msg || "Failed to update");
-    }
-  } catch (err) {
-    console.error("Update failed", err);
-    alert("Something went wrong");
-  }
-};
-
-
-      const data = await res.json();
+     const data = await res.json();
       if (res.ok) {
         alert("Profile updated successfully!");
         login(data.user); // Save to localStorage
@@ -86,6 +72,9 @@ const handleSave = async (e) => {
       alert("Something went wrong");
     }
   };
+
+
+     
 
   const handlePaperUpload = async (e) => {
     e.preventDefault();
