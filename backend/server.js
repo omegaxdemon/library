@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 const nodemailer = require("nodemailer");
-const otpStore = {}; // In-memory store for email-OTP pairs
+const otpStore = {};
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -32,12 +32,12 @@ cloudinary.config({
 
 mongoose.connect('mongodb+srv://omegaxdemon:Debottam%408@elibrary.snzqi8b.mongodb.net/eLibrary?retryWrites=true&w=majority&appName=eLibrary');
 
-// ✅ Multer temp storage for Cloudinary uploads
+// Multer temp storage
 const uploadTemp = multer({ dest: "temp/" });
 
 /* ======================= SIGN UP & LOGIN ======================= */
 
-// ✅ OTP-based Sign Up (Step 1)
+// ✅ Send OTP
 app.post("/api/send-otp", async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ msg: "Email required" });
@@ -61,7 +61,7 @@ app.post("/api/send-otp", async (req, res) => {
   }
 });
 
-// ✅ OTP Verification (Step 2)
+// ✅ OTP Verification
 app.post("/api/verify-otp-signup", async (req, res) => {
   const { email, otp, ...userData } = req.body;
   if (otpStore[email] !== otp) return res.status(400).json({ msg: "Invalid or expired OTP" });
@@ -80,7 +80,7 @@ app.post("/api/verify-otp-signup", async (req, res) => {
   }
 });
 
-// ✅ Legacy Signup Fallback (if OTP not used)
+// ✅ Fallback Signup
 app.post("/api/signup", async (req, res) => {
   try {
     const existingUser = await User.findOne({ email: req.body.email });
@@ -143,7 +143,6 @@ app.put("/api/profile/:email", async (req, res) => {
   }
 });
 
-
 /* ======================= BOOK UPLOADS ======================= */
 
 // ✅ Get All Books
@@ -156,25 +155,19 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-// ✅ Upload Research Paper (Cloudinary only)
-app.post("/api/upload-paper", uploadTemp.single("paper"), async (req, res) => {
+// ✅ Upload Research Paper (now via JSON link, no multer)
+app.post("/api/upload-paper", async (req, res) => {
   try {
-    const { title, uploader } = req.body;
-    if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
-
-    const cloudResult = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
-      folder: "books",
-      public_id: title.replace(/\s+/g, "_"),
-    });
-
-    fs.unlinkSync(req.file.path);
+    const { title, uploader, link } = req.body;
+    if (!title || !uploader || !link) {
+      return res.status(400).json({ msg: "Missing required fields" });
+    }
 
     const book = new Book({
       title,
       author: uploader,
       category: "Research Paper",
-      link: cloudResult.secure_url,
+      link,
       cover: "https://res.cloudinary.com/dl6qmklgj/image/upload/v1719999999/books/research-default.jpg"
     });
 
@@ -233,7 +226,7 @@ app.post("/api/admin/upload", uploadTemp.fields([
 
 /* ======================= ADMIN PANEL ======================= */
 
-// ✅ Admin Delete Book (DB only)
+// ✅ Admin Delete Book
 app.delete("/api/admin/delete/:id", async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
