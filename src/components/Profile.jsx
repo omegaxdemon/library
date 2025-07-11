@@ -243,5 +243,5 @@ const handleSave = async (e) => {
     </>
   );
 };
-login(data.user);
+
 export default Profile;
