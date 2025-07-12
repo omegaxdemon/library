@@ -36,7 +36,7 @@ const About = () => {
     <div className="about-container">
       <h1 className="about-title">About Our Project</h1>
       <p className="about-description">
-        We are three final-year Computer Science students from St. Xavier’s College, Kolkata, working on this platform to help students, researchers, and teachers manage their PDFs, audiobooks, and research materials — all in one place, securely under their profiles.
+        We are three third-year Computer Science students from St. Xavier’s College, Kolkata, working on this platform to help students, researchers, and teachers manage their PDFs, audiobooks, and research materials — all in one place, securely under their profiles.
       </p>
 
       <div className="team-grid">
