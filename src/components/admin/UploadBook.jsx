@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './admin.css';
+import Spinner from '../Spinner'; // ✅ Import Spinner
 
 const UploadBook = () => {
   const [title, setTitle] = useState('');
@@ -7,6 +8,7 @@ const UploadBook = () => {
   const [category, setCategory] = useState('');
   const [bookFile, setBookFile] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
+  const [loading, setLoading] = useState(false); // ✅ Loader state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,8 @@ const UploadBook = () => {
     formData.append("category", category);
     formData.append("bookFile", bookFile);
     formData.append("coverImage", coverImage);
+
+    setLoading(true); // ✅ Start loader
 
     try {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/admin/upload", {
@@ -44,6 +48,8 @@ const UploadBook = () => {
     } catch (err) {
       console.error("Error uploading:", err);
       alert("Something went wrong");
+    } finally {
+      setLoading(false); // ✅ Stop loader
     }
   };
 
@@ -53,13 +59,31 @@ const UploadBook = () => {
         <center><h2>Upload Book / Audiobook</h2></center>
         <form onSubmit={handleSubmit} className="admin-upload-form">
           <label>Title:</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            disabled={loading}
+          />
 
           <label>Author:</label>
-          <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+          <input
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            required
+            disabled={loading}
+          />
 
           <label>Category:</label>
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            disabled={loading}
+          />
 
           <label>Upload Book (PDF, MP3, WAV, M4A):</label>
           <input
@@ -67,6 +91,7 @@ const UploadBook = () => {
             accept=".pdf,.mp3,.wav,.m4a"
             onChange={(e) => setBookFile(e.target.files[0])}
             required
+            disabled={loading}
           />
 
           <label>Cover Image:</label>
@@ -75,9 +100,17 @@ const UploadBook = () => {
             accept="image/*"
             onChange={(e) => setCoverImage(e.target.files[0])}
             required
+            disabled={loading}
           />
           <br />
-          <center><button type="submit" className="upload-btn">Upload</button></center>
+
+          <center>
+            {loading ? <Spinner /> : (
+              <button type="submit" className="upload-btn" disabled={loading}>
+                Upload
+              </button>
+            )}
+          </center>
         </form>
       </div>
     </div>
