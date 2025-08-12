@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './signup.css';
 import { NavLink } from 'react-router-dom';
 import Nav from './nav/Nav';
+import Spinner from './Spinner'; // ✅ Import Spinner
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const Signup = () => {
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpInput, setOtpInput] = useState('');
+  const [loading, setLoading] = useState(false); // ✅ Loader state
 
   const handleChange = (e) => {
     setFormData({
@@ -26,6 +28,7 @@ const Signup = () => {
 
   const sendOTP = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ Start loader
 
     try {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/send-otp", {
@@ -45,11 +48,14 @@ const Signup = () => {
     } catch (err) {
       console.error("OTP Error:", err);
       alert("Something went wrong.");
+    } finally {
+      setLoading(false); // ✅ Stop loader
     }
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ Start loader
 
     try {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/verify-otp-signup", {
@@ -69,6 +75,8 @@ const Signup = () => {
     } catch (error) {
       console.error("Signup error:", error);
       alert("Signup failed");
+    } finally {
+      setLoading(false); // ✅ Stop loader
     }
   };
 
@@ -87,7 +95,7 @@ const Signup = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           />
 
           <label>Email</label>
@@ -98,7 +106,7 @@ const Signup = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           />
 
           <label>Password</label>
@@ -109,7 +117,7 @@ const Signup = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           />
 
           <label>Institution Name</label>
@@ -120,7 +128,7 @@ const Signup = () => {
             value={formData.institution}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           />
 
           <label>Type of User</label>
@@ -129,7 +137,7 @@ const Signup = () => {
             value={formData.userType}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           >
             <option value="">Select user type</option>
             <option value="student">Student</option>
@@ -143,7 +151,7 @@ const Signup = () => {
             value={formData.securityQuestion}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           >
             <option value="">Select a security question</option>
             <option value="pet">What is your pet's name?</option>
@@ -159,7 +167,7 @@ const Signup = () => {
             value={formData.securityAnswer}
             onChange={handleChange}
             required
-            disabled={otpSent}
+            disabled={otpSent || loading}
           />
 
           {otpSent && (
@@ -170,11 +178,16 @@ const Signup = () => {
                 value={otpInput}
                 onChange={(e) => setOtpInput(e.target.value)}
                 required
+                disabled={loading}
               />
             </>
           )}
 
-          <button type="submit">{otpSent ? "Verify OTP & Register" : "Send OTP"}</button>
+          {loading ? <Spinner /> : (
+            <button type="submit" disabled={loading}>
+              {otpSent ? "Verify OTP & Register" : "Send OTP"}
+            </button>
+          )}
 
           <p className="signin-text">
             Already have an account? <NavLink to="/Log">Sign in</NavLink>
