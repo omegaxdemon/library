@@ -3,6 +3,7 @@ import { useAuth } from '../AuthContext';
 import Nav from './nav/Nav';
 import './profile.css';
 import { useNavigate, NavLink } from 'react-router-dom';
+import Spinner from './Spinner'; // ✅ Added
 
 const Profile = () => {
   const { user, login, logout } = useAuth();
@@ -13,6 +14,7 @@ const Profile = () => {
 
   const [paperTitle, setPaperTitle] = useState('');
   const [paperFile, setPaperFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false); // ✅ Added
 
   const handlePicChange = (e) => {
     const file = e.target.files[0];
@@ -22,59 +24,57 @@ const Profile = () => {
     }
   };
 
-  // ONLY CHANGES ARE INSIDE handleSave()
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setIsUploading(true); // ✅ Start spinner
+    let uploadedUrl = profilePic;
 
-const handleSave = async (e) => {
-  e.preventDefault();
-  let uploadedUrl = profilePic;
+    if (selectedFile) {
+      const cloudForm = new FormData();
+      cloudForm.append("file", selectedFile);
+      cloudForm.append("upload_preset", "elibrary");
+      cloudForm.append("folder", "uploads");
 
-  if (selectedFile) {
-    const cloudForm = new FormData();
-    cloudForm.append("file", selectedFile);
-    cloudForm.append("upload_preset", "elibrary");
-    cloudForm.append("folder", "uploads"); // ✅ Ensure upload goes into 'uploads' folder
+      const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
+        method: "POST",
+        body: cloudForm,
+      });
 
-    const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/image/upload", {
-      method: "POST",
-      body: cloudForm,
-    });
+      const cloudData = await cloudRes.json();
 
-    const cloudData = await cloudRes.json();
-
-    if (cloudRes.ok) {
-      uploadedUrl = cloudData.secure_url;
-    } else {
-      alert("Failed to upload profile image.");
-      return;
+      if (cloudRes.ok) {
+        uploadedUrl = cloudData.secure_url;
+      } else {
+        alert("Failed to upload profile image.");
+        setIsUploading(false);
+        return;
+      }
     }
-  }
 
-  try {
-    const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        profilePic: uploadedUrl,
-        preference,
-      }),
-    });
+    try {
+      const res = await fetch(`https://library-backend-fwfr.onrender.com/api/profile/${user.email}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profilePic: uploadedUrl,
+          preference,
+        }),
+      });
 
-     const data = await res.json();
+      const data = await res.json();
       if (res.ok) {
         alert("Profile updated successfully!");
-        login(data.user); // Save to localStorage
-        //window.location.reload(); // 🔁 Force refresh to update navbar/profile image
+        login(data.user);
       } else {
         alert(data.msg || "Failed to update");
       }
     } catch (err) {
       console.error("Update failed", err);
       alert("Something went wrong");
+    } finally {
+      setIsUploading(false); // ✅ Stop spinner
     }
   };
-
-
-     
 
   const handlePaperUpload = async (e) => {
     e.preventDefault();
@@ -88,8 +88,6 @@ const handleSave = async (e) => {
       cloudForm.append("file", paperFile);
       cloudForm.append("upload_preset", "elibrary");
       cloudForm.append("folder", `books/${paperTitle.replace(/\s+/g, "_")}`);
-
-
 
       const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dl6qmklgj/raw/upload", {
         method: "POST",
@@ -147,8 +145,19 @@ const handleSave = async (e) => {
               <img src={user?.profilePic || "/default-avatar.png"} alt="Admin Profile" className="profile-pic" />
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="file" accept="image/*" onChange={handlePicChange} />
-              <button onClick={handleSave} className="save-btn" style={{ marginTop: "10px" }}>
-                Save Profile Picture
+              <button
+                onClick={handleSave}
+                className="save-btn"
+                style={{ marginTop: "10px" }}
+                disabled={isUploading} // ✅ Disabled during upload
+              >
+                {isUploading ? (
+                  <>
+                    <Spinner /> Uploading...
+                  </>
+                ) : (
+                  "Save Profile Picture"
+                )}
               </button>
             </div>
 
@@ -205,7 +214,19 @@ const handleSave = async (e) => {
               <option value="philosophy">Philosophy</option>
             </select>
 
-            <button className="save-btn" onClick={handleSave}>Save Preferences</button>
+            <button
+              className="save-btn"
+              onClick={handleSave}
+              disabled={isUploading} // ✅ Disabled during upload
+            >
+              {isUploading ? (
+                <>
+                  <Spinner /> Uploading...
+                </>
+              ) : (
+                "Save Preferences"
+              )}
+            </button>
           </div>
 
           {(user?.userType === 'teacher' || user?.userType === 'researcher') && (
