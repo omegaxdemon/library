@@ -3,6 +3,7 @@ import Nav from './Nav';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './log.css';
 import { useAuth } from '../../AuthContext';
+import Spinner from './Spinner'; // ✅ Import Spinner
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -14,8 +15,8 @@ const Login = () => {
 
   const { user, login } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); // ✅ Loader state
 
-  // ✅ Redirect if already logged in
   useEffect(() => {
     if (user) navigate("/Profile");
   }, [user, navigate]);
@@ -29,6 +30,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ Start loader
 
     try {
       const res = await fetch("https://library-backend-fwfr.onrender.com/api/signin", {
@@ -42,13 +44,15 @@ const Login = () => {
       if (res.ok) {
         alert("Login successful!");
         login(data.user);
-        navigate("/Profile"); // ✅ redirect after login
+        navigate("/Profile");
       } else {
         alert(data.msg || "Login failed");
       }
     } catch (err) {
       console.error("Login error:", err);
       alert("Login failed");
+    } finally {
+      setLoading(false); // ✅ Stop loader
     }
   };
 
@@ -67,6 +71,7 @@ const Login = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
           <label>Password</label>
@@ -77,6 +82,7 @@ const Login = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
           <label>Security Question</label>
@@ -85,6 +91,7 @@ const Login = () => {
             value={formData.securityQuestion}
             onChange={handleChange}
             required
+            disabled={loading}
           >
             <option value="">Select a security question</option>
             <option value="pet">What is your pet's name?</option>
@@ -100,9 +107,12 @@ const Login = () => {
             value={formData.securityAnswer}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
-          <button type="submit">Sign In</button>
+          {loading ? <Spinner /> : (
+            <button type="submit" disabled={loading}>Sign In</button>
+          )}
 
           <p className="signup-link">
             Don’t have an account? <NavLink to='/Sign'>Create one</NavLink>
