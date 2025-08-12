@@ -3,7 +3,7 @@ import Nav from './Nav';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './log.css';
 import { useAuth } from '../../AuthContext';
-import Spinner from './Spinner'; // ✅ Import Spinner
+import Spinner from '../Spinner'; // ✅ Import Spinner
 
 const Login = () => {
   const [formData, setFormData] = useState({
